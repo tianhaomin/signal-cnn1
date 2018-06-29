@@ -50,10 +50,10 @@ a = os.listdir("F:/project/Yin/spectrum-data")
 def read_data(file_num,start_frq,end_frq):
     z1 = DataFrame({})
     for i in range(file_num):
-        df = pandas.read_table("F:/project/Yin/spectrum-data//"+a[i+850],names=["fc","E"])
+        df = pandas.read_table("F:/project/Yin/spectrum-data//"+a[i],names=["fc","E"])
         df1 = df[df.fc.between(start_frq,end_frq)]
-        z1 = pandas.concat([z1,df1[[1]]])
-        z2 = z1['E']
+        z1 = pandas.concat([z1,df1['E']])
+        z2 = z1.values
         z3 = np.array([z2])
     return z3
 

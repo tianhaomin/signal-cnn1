@@ -10,10 +10,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
-from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D
+from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D,Flatten
 from keras.models import Model
 from keras import backend as K
-import os
 from keras import optimizers
 sns.set(style="ticks")
 sns.set(style="whitegrid", palette="pastel", color_codes=True)
@@ -219,36 +218,39 @@ plt.scatter(test[:,0],test[:,1])
 plt.show()
 
 ############################################################################set up autoencoder###################################################
+from keras.utils import np_utils  
+from keras.utils import plot_model 
+import pydot_ng as pydot  
+pydot.Dot.create(pydot.Dot())  
 input_x = Input(shape=(1,200,1))  # tensorflow后端
 x = Conv2D(32, (1,1),activation='relu', padding='same')(input_x)
-#x = Conv2D(48, (1,3), activation='relu', padding='same')(x)
-#x = MaxPooling2D(pool_size=(2,2),strides=(2,2), padding='same')(x)
-x = Conv2D(64, (1,1),strides=2, activation='relu', padding='same')(x)
-#x = Conv2D(80, (1,3), activation='relu', padding='same')(x)
-#x = MaxPooling2D(pool_size=(2,2),strides=(2,2), padding='same')(x)
-#x = Conv2D(128, (1,3), activation='relu', padding='same')(x)
+x = Conv2D(48, (1,3),activation='relu', padding='same')(x)
+x = MaxPooling2D(pool_size=(2,2),strides=(2,2), padding='same')(x)
+x = Conv2D(64, (1,1),activation='relu', padding='same')(x)
+x = Conv2D(80, (1,3),activation='relu', padding='same')(x)
+x = MaxPooling2D(pool_size=(2,2),strides=(2,2), padding='same')(x)
+x = Conv2D(128, (1,3), activation='relu', padding='same')(x)
 x = Conv2D(156, (1,3), activation='relu', padding='same')(x)
-#x = MaxPooling2D(pool_size=(2,2),strides=(2,2), padding='same')(x)
-x = Conv2D(200, (1,3),strides=2, activation='relu', padding='same')(x)
-#x = Conv2D(256, (1,3), activation='relu', padding='same')(x)
-#x = Conv2D(300, (1,3), activation='relu', padding='same')(x)
-
-encoded = MaxPooling2D(pool_size=(2,2),strides=(2,2), padding='same')(x)
-# 解码器
-#x = UpSampling2D((1, 2))(encoded)
-#x = Conv2D(300, (1,3), activation='relu', padding='same')(x)
-#x = Conv2D(256, (1,3), activation='relu', padding='same')(x)
+x = MaxPooling2D(pool_size=(2,2),strides=(2,2), padding='same')(x)
 x = Conv2D(200, (1,3), activation='relu', padding='same')(x)
-#x = UpSampling2D((1,2))(x)
-x = Conv2D(156, (1,3), activation='relu', padding='same')(x)
-#x = Conv2D(128, (1,3), activation='relu', padding='same')(x)
+x = Conv2D(256, (1,3), activation='relu', padding='same')(x)
+x = Conv2D(300, (1,3), activation='relu', padding='same')(x)
+encoded = MaxPooling2D(pool_size=(2,2),strides=(5,5),padding='same')(x)
+
+x = UpSampling2D((1,5))(encoded)
+x = Conv2D(300, (1,3), activation='relu', padding='same')(x)
+x = Conv2D(256, (1,3), activation='relu', padding='same')(x)
+x = Conv2D(200, (1,3), activation='relu', padding='same')(x)
 x = UpSampling2D((1,2))(x)
-#x = Conv2D(80, (1,3), activation='relu', padding='same')(x)
+x = Conv2D(156, (1,3), activation='relu', padding='same')(x)
+x = Conv2D(128, (1,3), activation='relu', padding='same')(x)
+x = UpSampling2D((1,2))(x)
+x = Conv2D(80, (1,3), activation='relu', padding='same')(x)
 x = Conv2D(64, (1,1), activation='relu', padding='same')(x)
 x = UpSampling2D((1,2))(x)
-#x = Conv2D(48, (1,3), activation='relu', padding='same')(x)
-x = Conv2D(32, (1,1), activation='relu', padding='same')(x)
-#x = UpSampling2D((2, 1))(x)
+x = Conv2D(48, (1,3), activation='relu', padding='same')(x)
+decoded = Conv2D(32, (1,1), activation='relu', padding='same')(x)
+
 
 decoded = Conv2D(1, (1, 3), activation='relu', padding='same')(x)
 
@@ -257,9 +259,11 @@ encoder = Model(inputs=input_x, outputs=encoded)
 autoencoder.compile(optimizer='Adam', loss='mse')  
 train = train.reshape(3400,1,200,1)
 autoencoder.fit(train, train, epochs=500, batch_size=56, shuffle=True)  
+
+plot_model(autoencoder, to_file='F://project//Cnn//operate//model.png')
 test = test.reshape(124,1,200,1)      
 results = encoder.predict(test)
-results = results.reshape(124,5000)
+results = results.reshape(124,1500)
 X_embedded = TSNE(n_components=2).fit_transform(results)
 plt.scatter(X_embedded[:,0],X_embedded[:,1])
 plt.show()

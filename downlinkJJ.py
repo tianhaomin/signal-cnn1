@@ -22,106 +22,127 @@ from pandas import DataFrame
 import tensorflow as tf
 import random
 from sklearn import preprocessing 
-#a = os.listdir("F:/project/Yin/spectrum-data")
-#def read_data(file_num,start_frq,end_frq):
-#    z1 = DataFrame({})
-#    for i in range(file_num):
-#        df = pandas.read_table("F:/project/Yin/spectrum-data//"+a[i],names=["fc","E"])
-#        df1 = df[df.fc.between(start_frq,end_frq)]
-#        z1 = pandas.concat([z1,df1['E']])
-#        z2 = z1.values
-#        z3 = np.array([z2])
-#    return z3
-#############cdma_down#########2
-#data_cdma_down = read_data(850,870,880).reshape(850,401)
-##############egsm_down#########4
-#data_egsm_down = read_data(850,930,940).reshape(850,401)
-#data_wcdma_down = read_data(850,2135,2145).reshape(850,401)
-###############4G################6
-#data_lte_down = read_data(850,1850,1860).reshape(850,401)
-##data_evdo_down = read_data(850,1920,1930).reshape(850,401)
-#data_dcs_down = read_data(850,1900,1910).reshape(850,401)
-#
-#data_cdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_cdma_down] )
-#data_egsm_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_egsm_down] )
-#data_wcdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_wcdma_down] )
-#data_lte_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_lte_down] )
-##data_evdo_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_evdo_down] )
-#data_dcs_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_dcs_down] )
-#
-#train_data = [data_cdma_down,data_egsm_down,data_wcdma_down,data_lte_down,data_dcs_down]
-#train = train_data[0]
-#for i in range(len(train_data)-1):
-#    train = np.vstack((train,train_data[i+1]))
-########test set#############
-#a = os.listdir("F:/project/Yin/spectrum-data")
-#def read_data(file_num,start_frq,end_frq):
-#    z1 = DataFrame({})
-#    for i in range(file_num):
-#        df = pandas.read_table("F:/project/Yin/spectrum-data//"+a[i+850],names=["fc","E"])
-#        df1 = df[df.fc.between(start_frq,end_frq)]
-#        z1 = pandas.concat([z1,df1['E']])
-#        z2 = z1.values
-#        z3 = np.array([z2])
-#    return z3
-#
-#############cdma_down#########2
-#test_cdma_down = read_data(31,870,880).reshape(31,401)
-##############egsm_down#########4
-#test_egsm_down = read_data(31,930,940).reshape(31,401)
-###########lte下行#########
-#test_lte_down = read_data(31,1850,1860).reshape(31,401)
-##########wcdma下行###########
-#test_wcdma_down = read_data(31,2135,2145).reshape(31,401)
-##test_evdo_down = read_data(31,1920,1930).reshape(31,401)
-#test_dcs_down = read_data(31,1900,1910).reshape(31,401)
-#
-########
-#test_cdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_cdma_down] )
-#test_egsm_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_egsm_down] )
-#test_lte_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_lte_down] )
-#test_wcdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_wcdma_down] )
-##test_evdo_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_evdo_down] )
-#test_dcs_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_dcs_down] )
-###############
-#test_data = [test_cdma_down,test_egsm_down,test_wcdma_down,test_lte_down,test_dcs_down]
-#
-#test = test_data[0]
-#for i in range(len(test_data)-1):
-#    test = np.vstack((test,test_data[i+1]))
-########################################shuffle#######
-#train=train.astype(np.float32)
-#test = test.astype(np.float32)
-#enc = preprocessing.OneHotEncoder()  
-#enc.fit([[1],[2],[3],[4],[5]])  
-#
-#array1_1 = enc.transform([[1]]*850).toarray()  
-#array1_2 = enc.transform([[2]]*850).toarray()  
-#array1_3 = enc.transform([[3]]*850).toarray()  
-#array1_4 = enc.transform([[4]]*850).toarray()  
-#array1_5 = enc.transform([[5]]*850).toarray()  
-##array1_6 = enc.transform([[6]]*850).toarray()  
-#label1 = np.vstack((array1_1,array1_2,array1_3,array1_4,array1_5))
-#array1_1_test = enc.transform([[1]]*31).toarray()
-#array1_2_test = enc.transform([[2]]*31).toarray()
-#array1_3_test = enc.transform([[3]]*31).toarray()
-#array1_4_test = enc.transform([[4]]*31).toarray()
-#array1_5_test = enc.transform([[5]]*31).toarray()
-##array1_6_test = enc.transform([[6]]*31).toarray()
-#label1_test = np.vstack((array1_1_test,array1_2_test,array1_3_test,array1_4_test,array1_5_test))
-## 顺序打乱
-#label1 = label1.astype(np.float32)
-#label1_test = label1_test.astype(np.float32)
+a = os.listdir("F:/project/Yin/spectrum-data")
+def read_data(file_num,start_frq,end_frq):
+    z1 = DataFrame({})
+    for i in range(file_num):
+        df = pandas.read_table("F:/project/Yin/spectrum-data//"+a[i],names=["fc","E"])
+        df1 = df[df.fc.between(start_frq,end_frq)]
+        z1 = pandas.concat([z1,df1['E']])
+        z2 = z1.values
+        z3 = np.array([z2])
+    return z3
+############cdma_down#########2
+data_cdma_down = read_data(850,870,875).reshape(850,201)
+#############egsm_down#########4
+data_egsm_down = read_data(850,930,935).reshape(850,201)
+data_wcdma_down = read_data(850,2135,2140).reshape(850,201)
+##############4G################6
+data_lte_down = read_data(850,1850,1855).reshape(850,201)
+#data_evdo_down = read_data(850,1920,1930).reshape(850,401)
+data_dcs_down = read_data(850,1805,1810).reshape(850,201)
+data_tv = read_data(850,100,105).reshape(850,201)
 
-train = np.load("F://tmp//data//raw data//train.npy")
-label1=np.load("F://tmp//data//raw data//label_train.npy")
-test=np.load("F://tmp//data//raw data//test.npy")
-label1_test=np.load("F://tmp//data//raw data//label_test.npy")
+data_cdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_cdma_down] )
+data_egsm_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_egsm_down] )
+data_wcdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_wcdma_down] )
+data_lte_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_lte_down] )
+#data_evdo_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_evdo_down] )
+data_dcs_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_dcs_down] )
+data_tv = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in data_tv] )
 
+train_data = [data_cdma_down,data_egsm_down,data_wcdma_down,data_lte_down,data_dcs_down,data_tv]
+train = train_data[0]
+for i in range(len(train_data)-1):
+    train = np.vstack((train,train_data[i+1]))
+#######test set#############
+a = os.listdir("F:/project/Yin/spectrum-data")
+def read_data(file_num,start_frq,end_frq):
+    z1 = DataFrame({})
+    for i in range(file_num):
+        df = pandas.read_table("F:/project/Yin/spectrum-data//"+a[i+850],names=["fc","E"])
+        df1 = df[df.fc.between(start_frq,end_frq)]
+        z1 = pandas.concat([z1,df1['E']])
+        z2 = z1.values
+        z3 = np.array([z2])
+    return z3
+
+############cdma_down#########2
+test_cdma_down = read_data(31,870,875).reshape(31,201)
+#############egsm_down#########4
+test_egsm_down = read_data(31,930,935).reshape(31,201)
+##########lte下行#########
+test_lte_down = read_data(31,1850,1855).reshape(31,201)
+#########wcdma下行###########
+test_wcdma_down = read_data(31,2135,2140).reshape(31,201)
+#test_evdo_down = read_data(31,1920,1930).reshape(31,401)
+test_dcs_down = read_data(31,1805,1810).reshape(31,201)
+test_tv = read_data(31,100,105).reshape(31,201)
+
+#######
+test_cdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_cdma_down] )
+test_egsm_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_egsm_down] )
+test_lte_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_lte_down] )
+test_wcdma_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_wcdma_down] )
+#test_evdo_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_evdo_down] )
+test_dcs_down = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_dcs_down] )
+test_tv = np.array( [[row[i] for i in range(0, 201) if i != 200] for row in test_tv] )
+##############
+test_data = [test_cdma_down,test_egsm_down,test_wcdma_down,test_lte_down,test_dcs_down,test_tv]
+
+test = test_data[0]
+for i in range(len(test_data)-1):
+    test = np.vstack((test,test_data[i+1]))
+#######################################shuffle#######
+train=train.astype(np.float32)
+test = test.astype(np.float32)
+enc = preprocessing.OneHotEncoder()  
+enc.fit([[1],[2],[3],[4],[5],[6]])  
+
+array1_1 = enc.transform([[1]]*850).toarray()  
+array1_2 = enc.transform([[2]]*850).toarray()  
+array1_3 = enc.transform([[3]]*850).toarray()  
+array1_4 = enc.transform([[4]]*850).toarray()  
+array1_5 = enc.transform([[5]]*850).toarray()  
+array1_6 = enc.transform([[6]]*850).toarray()  
+label1 = np.vstack((array1_1,array1_2,array1_3,array1_4,array1_5,array1_6))
+array1_1_test = enc.transform([[1]]*31).toarray()
+array1_2_test = enc.transform([[2]]*31).toarray()
+array1_3_test = enc.transform([[3]]*31).toarray()
+array1_4_test = enc.transform([[4]]*31).toarray()
+array1_5_test = enc.transform([[5]]*31).toarray()
+array1_6_test = enc.transform([[6]]*31).toarray()
+label1_test = np.vstack((array1_1_test,array1_2_test,array1_3_test,array1_4_test,array1_5_test,array1_6_test))
+# 顺序打乱
+label1 = label1.astype(np.float32)
+label1_test = label1_test.astype(np.float32)
+
+
+idx=random.sample(range(5100),5100) 
+idx1 = random.sample(range(186),186)
+train = train[idx]
+test = test[idx1]
+label1 = label1[idx]
+label1_test = label1_test[idx1]
+
+#train = np.load("F://tmp//data//raw data//train.npy")
+#label1=np.load("F://tmp//data//raw data//label_train.npy")
+#test=np.load("F://tmp//data//raw data//test.npy")
+#label1_test=np.load("F://tmp//data//raw data//label_test.npy")
+##
+#
+#for i in train:
+#    idx=random.sample(range(200),180) 
+#    i[idx] = 0
+#
+#for i in test:
+#    idx=random.sample(range(200),180) 
+#    i[idx] = 0
+#    
 sess1  = tf.InteractiveSession()
 with tf.name_scope('input'):
     x = tf.placeholder(tf.float32, [None, 200],name='x-input')
-    y_ = tf.placeholder(tf.float32, [None, 4],name='y-input')
+    y_ = tf.placeholder(tf.float32, [None, 6],name='y-input')
 with tf.name_scope('input_reshape'):
     x_image = tf.reshape(x,[-1,1,200,1])
 def weight_variable(shape):
@@ -236,12 +257,11 @@ with tf.name_scope('dropout'):
 with tf.name_scope('fc_2'):
     # This Variable will hold the state of the weights for the layer
     with tf.name_scope('weights'):
-        W_fc2 = weight_variable([5000,4])
+        W_fc2 = weight_variable([5000,6])
     with tf.name_scope('biases'):
-        b_fc2 = bias_variable([4])
+        b_fc2 = bias_variable([6])
     with tf.name_scope('Wx_plus_b'):
         preactivate2 = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
-        tf.summary.histogram('pre_activations', preactivate2)
     activations2 = tf.nn.softmax(preactivate2, name='activation')
 with tf.name_scope('cross_entropy'):
     cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(tf.clip_by_value(activations2,1e-10,1.0)), reduction_indices=[1]))
@@ -285,7 +305,7 @@ tf.global_variables_initializer().run()
 result_test=[]
 result_train=[]
 for i in range(3000):
-    for j in range(85):
+    for j in range(102):
         if j % 10 == 0:  # Record summaries and test-set accuracy
             acc = sess1.run([accuracy], feed_dict={x:test,y_:label1_test,keep_prob:1.0})
             result_test.append(acc)
@@ -293,7 +313,7 @@ for i in range(3000):
         else:  # Record a summary
     #         t1=time.time()
             _ = sess1.run([train_step], feed_dict={x:train[50*j:50*(j+1)],y_:label1[50*j:50*(j+1)],keep_prob:0.8})
-            acc_train = sess1.run([accuracy],feed_dict={x:train[0:200],y_:label1[0:200],keep_prob:0.8})
+            acc_train = sess1.run([accuracy],feed_dict={x:train[50*j:50*(j+1)],y_:label1[50*j:50*(j+1)],keep_prob:0.8})
             result_train.append(acc_train)
             print(acc_train)
                 #print(2)
@@ -309,5 +329,29 @@ save1=np.array(result_train)
 np.save("F://tmp//data//add new signal//1x1+1x5_train.npy",result_train)
 np.save("F://tmp//data//add new signal//1x1+1x5_valid.npy",result_test)
 
-
-
+import seaborn as sns
+sns.set()
+filter1 = sess1.run(W_conv4)
+filter2 = sess1.run(W_conv2)
+y_ = filter2[:,:,0,0]
+plt.plot([1,1],[0,y_[0][0]])
+plt.show()
+for i in range(32):
+    y_ = filter2[:,:,i,0]
+    for j in range(3):
+        plt.plot([j+1,j+1],[0,y_[0][j]])
+    plt.show()
+    
+    
+fig, axes = plt.subplots(nrows=8, ncols=8, figsize=(12, 12))
+for row in range(8):
+    for col in range(8):
+        x = [j for j in range(48)]
+        x = np.array(x)
+        y = [k for k in filter1[:,:,:,(8*row+col)]]
+        y = np.array(y).reshape(48,)
+        axes[row,col].plot(x,y)
+    
+fig.tight_layout()
+plt.show()
+    
